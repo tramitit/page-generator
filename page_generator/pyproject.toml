@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "page_generator"
+version = "0.1.0"
+description = "page-generator using crewAI"
+authors = ["Your Name <you@example.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<=3.13"
+crewai = { extras = ["tools"], version = ">=0.67.1,<1.0.0" }
+
+
+[tool.poetry.scripts]
+page_generator = "page_generator.main:run"
+run_crew = "page_generator.main:run"
+train = "page_generator.main:train"
+replay = "page_generator.main:replay"
+test = "page_generator.main:test"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

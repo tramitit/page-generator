@@ -1,0 +1,108 @@
+identify_services:
+  description: >
+    Research and compile a comprehensive list of the top 50 most requested 
+    public administrative services in {country}. Include services for both 
+    general population and expats. Each service should be listed in the local 
+    language with English translations.
+  expected_output: >
+    A JSON file containing 50 services with their original names, translations, 
+    and language identifications in the format:
+    {
+      "tramites": [
+        {
+          "name": "original service name",
+          "country": "{country}",
+          "original_language": "original language",
+          "translated_name": "translated service name",
+          "translated_language": "translated language"
+        }
+      ]
+    }
+  agent: service_researcher
+
+create_service_content:
+  description: >
+    Create detailed documentation for {service} in {country}. Search Reddit.com 
+    for real user experiences and combine with official information. Include a clear 
+    description, step-by-step procedure, required documents, and other relevant details. 
+    Follow the exact template format:
+    ---
+    title: [50-70 chars]
+    author: Ricardo Batista
+    date: [current_date]
+    categories: ["{country}"]
+    description: [110-160 chars]
+    draft: false
+    translationKey: [country-service-key]
+    ---
+
+    ## Description
+    ### What is it?
+    [paragraph]
+
+    ### Who needs it?
+    [paragraph]
+
+    ## Procedure
+    [numbered list]
+
+    ## Required documents
+    [bulleted list]
+
+    ## Providers that can do it for you
+    [table format]
+
+    ## Additional details
+    [bulleted list]
+  expected_output: >
+    A markdown file with comprehensive, well-structured content following the exact template format.
+  agent: content_creator
+  context: [identify_services]
+
+translate_content:
+  description: >
+    Translate the content for {service} from English to the local language of 
+    {country}, ensuring all technical terms and administrative concepts are 
+    accurately conveyed. Maintain the exact same markdown structure and formatting, 
+    including frontmatter fields (only translate title, meta_title, and description).
+  expected_output: >
+    A markdown file containing the accurately translated content while 
+    maintaining the original structure and formatting, including all markdown elements.
+  agent: translator
+  context: [create_service_content]
+
+optimize_metadata:
+  description: >
+    Review and optimize the meta titles (50-70 chars) and descriptions (110-160 chars) 
+    for all service pages. Ensure they include relevant keywords and maintain high CTR potential. 
+    Verify character counts are strictly within limits.
+  expected_output: >
+    Updated markdown files with optimized meta titles and descriptions that 
+    meet exact character length requirements and SEO best practices.
+  agent: seo_specialist
+  context: [create_service_content, translate_content]
+
+create_internal_links:
+  description: >
+    Analyze all content using vector embeddings to create a network of relevant internal links 
+    between related services. Add a "Related Posts" section at the end of each file with 
+    3-5 most relevant services, using the format:
+    ## Related Posts
+    - [Service Title](URL)
+  expected_output: >
+    Updated markdown files with "Related Posts" sections containing 3-5 relevant 
+    internal links, formatted as specified.
+  agent: seo_specialist
+  context: [create_service_content, translate_content, optimize_metadata]
+
+research_service_providers:
+  description: >
+    Research and identify legitimate service providers who can assist with 
+    {service} in {country}. Search for providers, verify their legitimacy, 
+    and gather contact information (email and contact page). Exclude government websites.
+  expected_output: >
+    A CSV file containing verified service providers with columns:
+    country, original_service, translated_service, provider_name, provider_url, 
+    email, contact_page
+  agent: service_provider_researcher
+  context: [identify_services]
