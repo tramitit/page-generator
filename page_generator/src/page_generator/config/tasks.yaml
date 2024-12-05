@@ -7,17 +7,11 @@ identify_services:
   expected_output: >
     A JSON file containing 50 services with their original names, translations, 
     and language identifications in the format:
-    {
-      "tramites": [
-        {
-          "name": "original service name",
-          "country": "{country}",
-          "original_language": "original language",
-          "translated_name": "translated service name",
-          "translated_language": "translated language"
-        }
-      ]
-    }
+    "name": "original service name",
+    "country": "{country}",
+    "original_language": "original language",
+    "translated_name": "translated service name",
+    "translated_language": "translated language"
   agent: service_researcher
 
 create_service_content:

@@ -5,21 +5,7 @@ from crewai_tools import (
     SerperDevTool,
     FileReadTool,
     FileWriterTool,
-    BrowserbaseLoadTool,
 )
-
-
-class RedditSearchTool:
-    def __init__(self):
-        self.name = "Reddit Search"
-        self.description = "Search Reddit for discussions about specific services"
-
-
-class VectorStoreTool:
-    def __init__(self):
-        self.name = "Vector Store"
-        self.description = "Store and search vector embeddings for content similarity"
-
 
 # Uncomment the following line to use an example of a custom tool
 # from page_generator.tools.custom_tool import MyCustomTool
@@ -36,88 +22,65 @@ class PageGeneratorCrew:
     def service_researcher(self) -> Agent:
         return Agent(
             config=self.agents_config["service_researcher"],
-            tools=[SerperDevTool()],
             verbose=True,
+            tools=[SerperDevTool()],
         )
 
     @agent
     def content_creator(self) -> Agent:
         return Agent(
             config=self.agents_config["content_creator"],
-            tools=[
-                SerperDevTool(),
-                RedditSearchTool(),
-                FileReadTool(),
-                FileWriterTool(),
-            ],
             verbose=True,
+            tools=[SerperDevTool(), FileReadTool(), FileWriterTool()],
         )
 
     @agent
     def translator(self) -> Agent:
         return Agent(
             config=self.agents_config["translator"],
-            tools=[FileReadTool(), FileWriterTool()],
             verbose=True,
+            tools=[FileReadTool(), FileWriterTool()],
         )
 
     @agent
     def seo_specialist(self) -> Agent:
         return Agent(
             config=self.agents_config["seo_specialist"],
-            tools=[
-                FileReadTool(),
-                FileWriterTool(),
-                VectorStoreTool(),
-            ],
             verbose=True,
+            tools=[FileReadTool(), FileWriterTool()],
         )
 
     @agent
     def service_provider_researcher(self) -> Agent:
         return Agent(
             config=self.agents_config["service_provider_researcher"],
-            tools=[SerperDevTool(), BrowserbaseLoadTool()],
             verbose=True,
+            tools=[SerperDevTool()],
         )
 
     @task
     def identify_services(self) -> Task:
-        return Task(
-            config=self.tasks_config["identify_services"], agent=self.service_researcher
-        )
+        return Task(config=self.tasks_config["identify_services"])
 
     @task
     def create_service_content(self) -> Task:
-        return Task(
-            config=self.tasks_config["create_service_content"],
-            agent=self.content_creator,
-        )
+        return Task(config=self.tasks_config["create_service_content"])
 
     @task
     def translate_content(self) -> Task:
-        return Task(
-            config=self.tasks_config["translate_content"], agent=self.translator
-        )
+        return Task(config=self.tasks_config["translate_content"])
 
     @task
     def optimize_metadata(self) -> Task:
-        return Task(
-            config=self.tasks_config["optimize_metadata"], agent=self.seo_specialist
-        )
+        return Task(config=self.tasks_config["optimize_metadata"])
 
     @task
     def create_internal_links(self) -> Task:
-        return Task(
-            config=self.tasks_config["create_internal_links"], agent=self.seo_specialist
-        )
+        return Task(config=self.tasks_config["create_internal_links"])
 
     @task
     def research_service_providers(self) -> Task:
-        return Task(
-            config=self.tasks_config["research_service_providers"],
-            agent=self.service_provider_researcher,
-        )
+        return Task(config=self.tasks_config["research_service_providers"])
 
     @crew
     def crew(self) -> Crew:
@@ -127,7 +90,4 @@ class PageGeneratorCrew:
             tasks=self.tasks,
             process=Process.sequential,
             verbose=True,
-            max_rpm=50,  # Limit requests per minute to avoid rate limits
-            cache=True,  # Cache tool results
-            full_output=True,  # Get outputs from all tasks
         )
