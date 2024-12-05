@@ -3,78 +3,157 @@ identify_services:
     Research and compile a comprehensive list of the top 50 most requested 
     public administrative services in {country}. Include services for both 
     general population and expats. Each service should be listed in the local 
-    language with English translations.
+    language with English translations. 
+
+    IMPORTANT CRITERIA:
+    1. Use specific governmental process names that people actually search for
+       GOOD: "Solicitar NIE (Número de Identidad de Extranjero)"
+       BAD: "Obtain identification" or "Register for documents"
+
+    2. Focus on concrete administrative procedures, not general service areas
+       GOOD: "Renovación del permiso de residencia"
+       BAD: "Immigration services" or "Document processing"
+
+    3. Use the exact official names as they appear on government websites
+       and common search terms that locals use
+
+    IMPORTANT: Output ONLY a valid JSON array of objects with no additional text or comments.
+    Each object must follow this exact structure:
+      "name": "original service name",
+      "country": "{country}",
+      "original_language": "original language",
+      "translated_name": "translated service name",
+      "translated_language": "translated language"
   expected_output: >
-    A JSON file containing 50 services with their original names, translations, 
-    and language identifications in the format:
-    "name": "original service name",
-    "country": "{country}",
-    "original_language": "original language",
-    "translated_name": "translated service name",
-    "translated_language": "translated language"
+    A JSON array containing exactly 50 service objects. No additional text, comments, or explanations.
+    Each object must have exactly these fields: name, country, original_language, translated_name, translated_language.
+    Each service name must be a specific governmental procedure that matches common search terms.
   agent: service_researcher
+  output_file: services.json
 
 create_service_content:
   description: >
-    Create detailed documentation for {service} in {country}. Search Reddit.com 
-    for real user experiences and combine with official information. Include a clear 
-    description, step-by-step procedure, required documents, and other relevant details. 
-    Follow the exact template format:
+    Create detailed documentation for {service} in {country}. 
+
+    IMPORTANT RESEARCH INSTRUCTIONS:
+    1. Research Process:
+       - First, search "site:reddit.com {service} {country}" to gather real experiences and insights
+       - Use these Reddit experiences to understand common issues, requirements, and processes
+       - Then find official sources that verify this information
+       - Only include information that can be verified with official sources
+       - Only link to government websites, official organizations, or accredited institutions
+
+    2. For providers section:
+       - Do not use Reddit information
+       - Search for professional service providers that:
+         * Have transparent pricing available online
+         * Are officially registered businesses
+         * Have professional websites with clear service offerings
+
+    3. Content Guidelines:
+       - Base content on real experiences found on Reddit
+       - Include practical tips and common issues mentioned in Reddit threads
+       - BUT only link to official sources that confirm this information
+       - Never mention Reddit or include Reddit links
+       - All linked sources must be official/governmental websites
+       - DO NOT include any explanatory text or comments about the content
+       - DO NOT include any markdown formatting instructions or placeholders
+
+    OUTPUT FORMAT:
+    Create a markdown file named "{service}.md" with this structure:
     ---
-    title: [50-70 chars]
-    author: Ricardo Batista
-    date: [current_date]
+    title: [SEO-optimized title, 50-70 characters]
+    author: "Ricardo Batista"
+    date: "{current_date}"
     categories: ["{country}"]
-    description: [110-160 chars]
+    description: [Engaging meta description, 110-160 characters]
     draft: false
-    translationKey: [country-service-key]
+    translationKey: "{country}-{service}"
     ---
 
     ## Description
     ### What is it?
-    [paragraph]
+    [Combine Reddit insights with official descriptions, link only to official sources]
 
     ### Who needs it?
-    [paragraph]
+    [Based on Reddit experiences but verified and linked to official requirements]
 
     ## Procedure
-    [numbered list]
+    1. [Real-world process based on Reddit experiences]
+    2. [Include only official links that verify these steps]
+    3. [Add practical tips from Reddit but link to official confirmations]
 
-    ## Required documents
-    [bulleted list]
+    ## Required Documents
+    * [Document list combining Reddit experiences with official requirements]
+    * [Include only official links for document information]
+    * [Note common issues from Reddit but verify with official sources]
 
     ## Providers that can do it for you
-    [table format]
+    | Provider | Services | Price Range | Contact |
+    |----------|----------|-------------|---------|
+    | [Provider Name](url) | Services offered | Price range | Contact info |
 
-    ## Additional details
-    [bulleted list]
+    ## Additional Details
+    * [Practical tips from Reddit experiences]
+    * [Common pitfalls mentioned in threads]
+    * [Regional variations]
+    * [All verified and linked to official sources]
+
   expected_output: >
-    A markdown file with comprehensive, well-structured content following the exact template format.
+    A clean markdown file with no explanatory comments, placeholder text, or extra formatting instructions.
+    The content should be direct and complete, with no meta-commentary about the content or structure.
   agent: content_creator
   context: [identify_services]
+  output_file: "{service}.md"
 
 translate_content:
   description: >
-    Translate the content for {service} from English to the local language of 
-    {country}, ensuring all technical terms and administrative concepts are 
-    accurately conveyed. Maintain the exact same markdown structure and formatting, 
-    including frontmatter fields (only translate title, meta_title, and description).
+    Translate the content for {service} from English to the local language of {country}.
+
+    IMPORTANT TRANSLATION INSTRUCTIONS:
+    1. Language Guidelines:
+       - Use the specific local variant of the language (e.g., Spanish from Spain, not Latin America)
+       - Use local expressions and terminology commonly used in {country}
+       - Maintain official terms as used by local government agencies
+       - Adapt cultural references to local context
+       - Keep URLs and technical terms as they appear in local official sources
+
+    2. Content Requirements:
+       - Translate all content except:
+         * Author name
+         * URLs
+         * Technical reference numbers
+       - Adapt the title and description to be SEO-optimized for local language searches
+       - Ensure character limits are maintained:
+         * Title: 50-70 characters
+         * Description: 110-160 characters
+
+    3. Output Guidelines:
+       - DO NOT include any explanatory text or comments
+       - DO NOT include any translation notes or alternatives
+       - DO NOT include any markdown formatting instructions
+       - Output ONLY the final translated content
+
+    OUTPUT FORMAT:
+    Create a markdown file named "{service}.md", where service should be in the local language, with this structure:
+    ---
+    title: [Local language SEO-optimized title, 50-70 characters]
+    author: "Ricardo Batista"
+    date: "{current_date}"
+    categories: ["{country}"]
+    description: [Local language engaging description, 110-160 characters]
+    draft: false
+    translationKey: "{country}-{service}"
+    ---
+
+    [Rest of the content translated to local language, maintaining exact same structure]
+
   expected_output: >
-    A markdown file containing the accurately translated content while 
-    maintaining the original structure and formatting, including all markdown elements.
+    A clean markdown file in the local language, with no additional text, comments, or formatting instructions.
+    The translation should read naturally to local users while maintaining all technical accuracy.
   agent: translator
   context: [create_service_content]
-
-optimize_metadata:
-  description: >
-    Review and optimize the meta titles (50-70 chars) and descriptions (110-160 chars) 
-    for all service pages. Ensure they include relevant keywords and maintain high CTR potential. 
-    Verify character counts are strictly within limits.
-  expected_output: >
-    Updated markdown files with optimized meta titles and descriptions that 
-    meet exact character length requirements and SEO best practices.
-  agent: seo_specialist
-  context: [create_service_content, translate_content]
+  output_file: "{service}.md"
 
 create_internal_links:
   description: >
@@ -87,16 +166,4 @@ create_internal_links:
     Updated markdown files with "Related Posts" sections containing 3-5 relevant 
     internal links, formatted as specified.
   agent: seo_specialist
-  context: [create_service_content, translate_content, optimize_metadata]
-
-research_service_providers:
-  description: >
-    Research and identify legitimate service providers who can assist with 
-    {service} in {country}. Search for providers, verify their legitimacy, 
-    and gather contact information (email and contact page). Exclude government websites.
-  expected_output: >
-    A CSV file containing verified service providers with columns:
-    country, original_service, translated_service, provider_name, provider_url, 
-    email, contact_page
-  agent: service_provider_researcher
-  context: [identify_services]
+  context: [create_service_content, translate_content]

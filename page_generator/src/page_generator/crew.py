@@ -42,45 +42,37 @@ class PageGeneratorCrew:
             tools=[FileReadTool(), FileWriterTool()],
         )
 
-    @agent
-    def seo_specialist(self) -> Agent:
-        return Agent(
-            config=self.agents_config["seo_specialist"],
-            verbose=True,
-            tools=[FileReadTool(), FileWriterTool()],
-        )
-
-    @agent
-    def service_provider_researcher(self) -> Agent:
-        return Agent(
-            config=self.agents_config["service_provider_researcher"],
-            verbose=True,
-            tools=[SerperDevTool()],
-        )
+    # @agent
+    # def seo_specialist(self) -> Agent:
+    #     return Agent(
+    #         config=self.agents_config["seo_specialist"],
+    #         verbose=True,
+    #         tools=[FileReadTool(), FileWriterTool()],
+    #     )
 
     @task
     def identify_services(self) -> Task:
-        return Task(config=self.tasks_config["identify_services"])
+        return Task(
+            config=self.tasks_config["identify_services"], output_file="services.json"
+        )
 
     @task
     def create_service_content(self) -> Task:
-        return Task(config=self.tasks_config["create_service_content"])
+        return Task(
+            config=self.tasks_config["create_service_content"],
+            output_file="{service}.md",
+        )
 
     @task
     def translate_content(self) -> Task:
-        return Task(config=self.tasks_config["translate_content"])
+        return Task(
+            config=self.tasks_config["translate_content"],
+            output_file="{service}.md",
+        )
 
-    @task
-    def optimize_metadata(self) -> Task:
-        return Task(config=self.tasks_config["optimize_metadata"])
-
-    @task
-    def create_internal_links(self) -> Task:
-        return Task(config=self.tasks_config["create_internal_links"])
-
-    @task
-    def research_service_providers(self) -> Task:
-        return Task(config=self.tasks_config["research_service_providers"])
+    # @task
+    # def create_internal_links(self) -> Task:
+    #     return Task(config=self.tasks_config["create_internal_links"])
 
     @crew
     def crew(self) -> Crew:
